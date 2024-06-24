@@ -38,6 +38,7 @@ const PalettePreview = ({ list, navigation }) => (
 
 const Home = ({ navigation }) => {
   const [colors, setColors] = useState([]);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const fetchColors = useCallback(async () => {
     const result = await fetch(
@@ -51,6 +52,14 @@ const Home = ({ navigation }) => {
 
   useEffect(() => fetchColors(), []);
 
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    setTimeout(() => {
+      setIsRefreshing(false);
+      fetchColors();
+    }, 1000);
+  }, []);
+
   return (
     <FlatList
       style={styles.container}
@@ -59,6 +68,8 @@ const Home = ({ navigation }) => {
         <PalettePreview list={item} navigation={navigation} />
       )}
       ListEmptyComponent={<Text>Loading...</Text>}
+      refreshing={isRefreshing}
+      onRefresh={handleRefresh}
     />
   );
 };
