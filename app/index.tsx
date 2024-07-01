@@ -1,32 +1,39 @@
 import { Text, View, StyleSheet } from "react-native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
+import AddNewPaletteModal from "./screens/AddNewPaletteModal";
 import Home from "./screens/Home";
 import ColorsList from "./screens/ColorsList";
 
+const RootStack = createStackNavigator();
 function Index() {
-  const Stack = createNativeStackNavigator();
   return (
-    // <NavigationContainer>
-    <Stack.Navigator
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: "black",
-        },
-        headerTintColor: "#fff",
-        headerTitleStyle: {
-          fontWeight: "bold",
-        },
-      }}
-    >
-      <Stack.Screen name="Home" component={Home} />
-      <Stack.Screen
-        name="ColorsList"
-        component={ColorsList}
-        options={({ route }) => ({ title: route.params.paletteName })}
-      />
-    </Stack.Navigator>
-    // </NavigationContainer>
+    <RootStack.Navigator>
+      <RootStack.Group
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: "black",
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      >
+        <RootStack.Screen name="Home" component={Home} />
+        <RootStack.Screen
+          name="ColorsList"
+          component={ColorsList}
+          options={({ route }) => ({ title: route.params.paletteName })}
+        />
+      </RootStack.Group>
+      <RootStack.Group screenOptions={{ presentation: "modal" }}>
+        <RootStack.Screen
+          name="AddNewPaletteModal"
+          component={AddNewPaletteModal}
+        />
+      </RootStack.Group>
+    </RootStack.Navigator>
   );
 }
 

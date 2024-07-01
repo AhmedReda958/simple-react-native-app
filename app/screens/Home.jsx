@@ -50,7 +50,9 @@ const Home = ({ navigation }) => {
     }
   }, []);
 
-  useEffect(() => fetchColors(), []);
+  useEffect(() => {
+    fetchColors();
+  }, []);
 
   const handleRefresh = useCallback(async () => {
     setIsRefreshing(true);
@@ -58,12 +60,24 @@ const Home = ({ navigation }) => {
       setIsRefreshing(false);
       fetchColors();
     }, 1000);
+
+    return () => clearTimeout(refreshTimer);
   }, []);
 
   return (
     <FlatList
       style={styles.container}
       data={colors}
+      ListHeaderComponent={
+        <TouchableOpacity>
+          <Text
+            style={styles.addColorBtn}
+            onPress={() => navigation.push("AddNewPaletteModal")}
+          >
+            Add New Color +
+          </Text>
+        </TouchableOpacity>
+      }
       renderItem={({ item }) => (
         <PalettePreview list={item} navigation={navigation} />
       )}
@@ -87,6 +101,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginVertical: 10,
+  },
+  addColorBtn: {
+    fontSize: 20,
+    color: "teal",
+    fontWeight: "bold",
+    marginBottom: 10,
+    paddingTop: 16,
   },
 });
 export default Home;
