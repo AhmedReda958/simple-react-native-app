@@ -7,7 +7,8 @@ import {
   Text,
   View,
 } from "react-native";
-import { FlatList, TextInput } from "react-native-gesture-handler";
+import { FlatList, TextInput, TouchableOpacity } from "react-native";
+import * as Clipboard from "expo-clipboard";
 
 const COLORS = [
   { colorName: "AliceBlue", hexCode: "#F0F8FF" },
@@ -161,6 +162,8 @@ const COLORS = [
 
 const ColorItem = ({ item, onSelect }) => {
   const [isSelected, setIsSelected] = useState(false);
+  const [copied, setCopied] = useState(false);
+
   const handleSwitch = () => {
     setIsSelected((prev) => !prev);
     onSelect((prev) => {
@@ -171,11 +174,24 @@ const ColorItem = ({ item, onSelect }) => {
       }
     });
   };
+
+  const copyToClipboard = async (text) => {
+    await Clipboard.setStringAsync(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 500);
+  };
+
   return (
     <View style={styles.listItem}>
-      <View
-        style={{ height: 50, width: 150, backgroundColor: item.hexCode }}
-      ></View>
+      <TouchableOpacity onPress={() => copyToClipboard(item.hexCode)}>
+        <View style={{ height: 50, width: 150, backgroundColor: item.hexCode }}>
+          {copied && (
+            <Text style={{ fontSize: 10, textAlign: "center", paddingTop: 15 }}>
+              Copied to clipboard
+            </Text>
+          )}
+        </View>
+      </TouchableOpacity>
       <Text style={styles.colorName}>{item.colorName}</Text>
       <Switch
         value={isSelected}
