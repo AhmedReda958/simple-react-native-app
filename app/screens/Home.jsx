@@ -36,7 +36,7 @@ const PalettePreview = ({ list, navigation }) => (
   </View>
 );
 
-const Home = ({ navigation }) => {
+const Home = ({ navigation, route }) => {
   const [colors, setColors] = useState([]);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -64,10 +64,18 @@ const Home = ({ navigation }) => {
     return () => clearTimeout(refreshTimer);
   }, []);
 
+  const newPalette = route.params ? route.params.newPalette : null;
+  useEffect(() => {
+    if (newPalette) {
+      setColors((colors) => [newPalette, ...colors]);
+    }
+  }, [newPalette]);
+
   return (
     <FlatList
       style={styles.container}
       data={colors}
+      keyExtractor={(item) => item.paletteName}
       ListHeaderComponent={
         <TouchableOpacity>
           <Text
