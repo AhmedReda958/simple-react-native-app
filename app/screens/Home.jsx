@@ -5,7 +5,9 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
+  StatusBar,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const PalettePreview = ({ list, navigation }) => (
   <View key={list.title}>
@@ -72,27 +74,30 @@ const Home = ({ navigation, route }) => {
   }, [newPalette]);
 
   return (
-    <FlatList
-      style={styles.container}
-      data={colors}
-      keyExtractor={(item) => item.paletteName}
-      ListHeaderComponent={
-        <TouchableOpacity>
-          <Text
-            style={styles.addColorBtn}
-            onPress={() => navigation.push("AddNewPaletteModal")}
-          >
-            Add New Color +
-          </Text>
-        </TouchableOpacity>
-      }
-      renderItem={({ item }) => (
-        <PalettePreview list={item} navigation={navigation} />
-      )}
-      ListEmptyComponent={<Text>Loading...</Text>}
-      refreshing={isRefreshing}
-      onRefresh={handleRefresh}
-    />
+    <>
+      <StatusBar barStyle="light-content" backgroundColor={"black"} />
+      <FlatList
+        style={styles.container}
+        data={colors}
+        keyExtractor={(item) => item.paletteName}
+        ListHeaderComponent={
+          <TouchableOpacity>
+            <Text
+              style={styles.addColorBtn}
+              onPress={() => navigation.push("AddNewPaletteModal")}
+            >
+              Add New Color +
+            </Text>
+          </TouchableOpacity>
+        }
+        renderItem={({ item }) => (
+          <PalettePreview list={item} navigation={navigation} />
+        )}
+        ListEmptyComponent={<Text>Loading...</Text>}
+        refreshing={isRefreshing}
+        onRefresh={handleRefresh}
+      />
+    </>
   );
 };
 
