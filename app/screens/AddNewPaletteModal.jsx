@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Button,
   SafeAreaView,
@@ -164,7 +164,7 @@ const ColorItem = ({ item, onSelect }) => {
   const [isSelected, setIsSelected] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const handleSwitch = () => {
+  const handleSwitch = useCallback(() => {
     setIsSelected((prev) => !prev);
     onSelect((prev) => {
       if (isSelected) {
@@ -173,7 +173,7 @@ const ColorItem = ({ item, onSelect }) => {
         return [...prev, item];
       }
     });
-  };
+  });
 
   const copyToClipboard = async (text) => {
     await Clipboard.setStringAsync(text);
@@ -206,6 +206,7 @@ const ColorItem = ({ item, onSelect }) => {
 const AddNewPaletteModal = ({ navigation }) => {
   const [name, setName] = useState("");
   const [selectedColors, setSelectedColors] = useState([]);
+  const [btnDisabled, setBtnDisabled] = useState(true);
 
   const handleSubmit = useCallback(() => {
     if (!name) {
@@ -216,6 +217,14 @@ const AddNewPaletteModal = ({ navigation }) => {
       navigation.navigate("Home", {
         newPalette: { paletteName: name, colors: selectedColors },
       });
+    }
+  }, [name, selectedColors]);
+
+  useEffect(() => {
+    if (name && selectedColors.length >= 3) {
+      setBtnDisabled(false);
+    } else {
+      setBtnDisabled(true);
     }
   }, [name, selectedColors]);
 
@@ -234,7 +243,12 @@ const AddNewPaletteModal = ({ navigation }) => {
         )}
         keyExtractor={(item) => item.colorName}
       ></FlatList>
-      <Button title="Submit" color="blueviolet" onPress={handleSubmit} />
+      <Button
+        title="Submit"
+        color="blueviolet"
+        disabled={btnDisabled}
+        onPress={handleSubmit}
+      />
     </SafeAreaView>
   );
 };
